@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<meta http-equiv="Content-Language" content="zh-cn" />
+<meta http-equiv="Content-Language" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>est.im</title>
 <link rel="shortcut icon" href="favicon.ico" />
@@ -19,7 +19,7 @@ body { background-color:#000; font-family: Verdana, Geneva, Tahoma, sans-serif, 
 -->
 </style>
 
-<link rel="prefetch" href="http://blog.est.im/">
+<link rel="prefetch" href="https://blog.est.im/">
 <link rel="prefetch" href="https://github.com/est/">
 <link rel="prerender" href="https://github.com/est/">
 </head>
@@ -28,9 +28,9 @@ body { background-color:#000; font-family: Verdana, Geneva, Tahoma, sans-serif, 
 
 <div id="content">
   <div id="title">Est.im</div>
-  <div id="desc"><a href="http://en.wikipedia.org/wiki/extrospection">Extrospect</a>, 
-  <a href="http://de.wikipedia.org/wiki/sein">Sein</a> &amp; 
-  <a href="http://en.wikipedia.org/wiki/tao">Tao</a></div>
+  <div id="desc"><a href="https://en.wikipedia.org/wiki/extrospection">Extrospect</a>, 
+  <a href="https://de.wikipedia.org/wiki/sein">Sein</a> &amp; 
+  <a href="https://en.wikipedia.org/wiki/tao">Tao</a></div>
     <ul id="list">
       <li><a rel="prefetch" href="https://blog.est.im/">Blog</a></li>
       <li><a rel="prefetch" href="https://github.com/est/">Git</a></li>
@@ -42,7 +42,10 @@ body { background-color:#000; font-family: Verdana, Geneva, Tahoma, sans-serif, 
   <div id="footer">&copy; 2005-<span id="thisYear">2019</span> est.im</div>
 </div>
 <script type="text/javascript">
-    thisYear.innerText = (new Date()).getFullYear();
+  if(location.protocol==="http:"){
+      location.replace(location.href.replace(/^http:/, "https:"));
+  }
+  thisYear.innerText = (new Date()).getFullYear();
 </script>
 </body>
 
