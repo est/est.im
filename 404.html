@@ -1,22 +1,126 @@
-<html style="height:100%">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="Content-Language" content="en-us" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="shortcut icon" href="favicon.ico" />
-  <title>404 Not Found - est.im</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - est.im</title>
+    <!-- 
+        Zero dependency: No external CSS, no favicon, no JS 
+        
+        To prevent the browser from making a 404 request for a favicon.ico, 
+        we specify an empty data URI for the icon link.
+    -->
+    <link rel="icon" href="data:;base64,="> 
+    <style>
+        /*
+         * --- Global Styling and Setup (Blue Theme) ---
+         * Using system fonts as external fonts are disallowed.
+         */
+        :root {
+            --error-color: #3b82f6;    /* Vibrant Blue (Tailwind blue-500) */
+            --bg-color: #0f1f3a;       /* Deep Navy Blue */
+            --text-color: #e0f2fe;     /* Light Blue-tinted White (Tailwind sky-100) */
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: ui-sans-serif, system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide potential overflow from the abstract elements */
+            text-align: center;
+            position: relative; /* Needed for pseudo-elements to position correctly */
+        }
+
+        /*
+         * --- Abstract CSS Background Element (Creative Glitch/Light Source) ---
+         * Uses a large pseudo-element and blurry box-shadows for a zero-image background effect.
+         */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            /* Simplified transform for a floating, angled position */
+            transform: translate(-50%, -50%) rotate(45deg); 
+            background: transparent;
+            /* Creating large, soft glow effects using multiple shadows */
+            box-shadow: 
+                0 0 150px 100px rgba(59, 130, 246, 0.4),  /* Primary blue glow */
+                0 0 250px 150px rgba(14, 165, 233, 0.2),  /* Secondary lighter blue glow */
+                0 0 400px 200px rgba(0, 0, 0, 0.1);       /* Darker outer haze */
+            opacity: 0.6;
+            filter: blur(50px);
+            z-index: 1;
+        }
+
+
+        /*
+         * --- Foreground Error Content ---
+         */
+        .error-container {
+            position: relative;
+            z-index: 10; /* Ensure content is above the background glow */
+            padding: 3rem;
+            border-radius: 0.75rem; 
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800; /* Extra bold */
+            margin: 0;
+            color: var(--error-color);
+            /* Updated shadow to match the new blue color */
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.7), /* Stronger glow */
+                         0 0 4px var(--error-color);
+            line-height: 1;
+        }
+
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 0.5rem 0 1rem 0;
+            color: var(--text-color);
+        }
+
+        .error-description {
+            font-size: 1.125rem;
+            font-weight: 300;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .error-code {
+                font-size: 6rem;
+            }
+            .error-title {
+                font-size: 2rem;
+            }
+            .error-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
-<body style="color: #444; margin:0;font: normal 14px/20px Arial, Helvetica, sans-serif; height:100%; background-color: #fff;">
-  <div style="height:auto; min-height:100%; ">
-    <div style="text-align: center; width:800px; margin-left: -400px; position:absolute; top: 30%; left:50%;">
-      <h1 style="margin:0; font-size:12em; line-height:150px; font-weight:bold;">404</h1>
-      <h2 style="margin-top:20px;font-size: 3.8em;">Not Found</h2>
-      <p>Either page is missing or the URL is wrong</p>
+<body>
+    
+    <!-- Centered Error Content -->
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">PAGE MISSING</h2>
+        <p class="error-description">
+					The hyper-link is gone due to reasons
+        </p>
     </div>
-  </div>
+
 </body>
 </html>
-
-
-
-
