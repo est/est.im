@@ -1,126 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - est.im</title>
-    <!-- 
-        Zero dependency: No external CSS, no favicon, no JS 
-        
-        To prevent the browser from making a 404 request for a favicon.ico, 
-        we specify an empty data URI for the icon link.
-    -->
-    <link rel="icon" href="data:;base64,="> 
-    <style>
-        /*
-         * --- Global Styling and Setup (Blue Theme) ---
-         * Using system fonts as external fonts are disallowed.
-         */
-        :root {
-            --error-color: #3b82f6;    /* Vibrant Blue (Tailwind blue-500) */
-            --bg-color: #0f1f3a;       /* Deep Navy Blue */
-            --text-color: #e0f2fe;     /* Light Blue-tinted White (Tailwind sky-100) */
-        }
-
-        body {
-            height: 100vh;
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: ui-sans-serif, system-ui, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* Hide potential overflow from the abstract elements */
-            text-align: center;
-            position: relative; /* Needed for pseudo-elements to position correctly */
-        }
-
-        /*
-         * --- Abstract CSS Background Element (Creative Glitch/Light Source) ---
-         * Uses a large pseudo-element and blurry box-shadows for a zero-image background effect.
-         */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            width: 300px;
-            height: 300px;
-            /* Simplified transform for a floating, angled position */
-            transform: translate(-50%, -50%) rotate(45deg); 
-            background: transparent;
-            /* Creating large, soft glow effects using multiple shadows */
-            box-shadow: 
-                0 0 150px 100px rgba(59, 130, 246, 0.4),  /* Primary blue glow */
-                0 0 250px 150px rgba(14, 165, 233, 0.2),  /* Secondary lighter blue glow */
-                0 0 400px 200px rgba(0, 0, 0, 0.1);       /* Darker outer haze */
-            opacity: 0.6;
-            filter: blur(50px);
-            z-index: 1;
-        }
-
-
-        /*
-         * --- Foreground Error Content ---
-         */
-        .error-container {
-            position: relative;
-            z-index: 10; /* Ensure content is above the background glow */
-            padding: 3rem;
-            border-radius: 0.75rem; 
-        }
-
-        .error-code {
-            font-size: 8rem;
-            font-weight: 800; /* Extra bold */
-            margin: 0;
-            color: var(--error-color);
-            /* Updated shadow to match the new blue color */
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.7), /* Stronger glow */
-                         0 0 4px var(--error-color);
-            line-height: 1;
-        }
-
-        .error-title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin: 0.5rem 0 1rem 0;
-            color: var(--text-color);
-        }
-
-        .error-description {
-            font-size: 1.125rem;
-            font-weight: 300;
-            max-width: 400px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        /* Responsive adjustments for smaller screens */
-        @media (max-width: 600px) {
-            .error-code {
-                font-size: 6rem;
-            }
-            .error-title {
-                font-size: 2rem;
-            }
-            .error-description {
-                font-size: 1rem;
-            }
-        }
-    </style>
+<style>
+a:link			{font:8pt/11pt verdana; color:red}
+a:visited		{font:8pt/11pt verdana; color:#4e4e4e}
+</style>
+<meta HTTP-EQUIV="Content-Type" Content="text-html; charset=UTF-8">
+<title>HTTP 404 Not Found</title>
 </head>
-<body>
-    
-    <!-- Centered Error Content -->
-    <div class="error-container">
-        <h1 class="error-code">404</h1>
-        <h2 class="error-title">PAGE MISSING</h2>
-        <p class="error-description">
-					The hyper-link is gone due to reasons
-        </p>
-    </div>
 
+<body bgcolor="white">
+
+<table width="400" cellpadding="3" cellspacing="5">
+  <tr>
+    <td id="tableProps" valign="top" align="left">
+    <svg width="31" height="40" viewBox="0 0 31 40" fill="none" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <rect x="1" y="8" width="29" height="37" fill="black"/>
+      <rect x="0" y="0" width="29" height="38" fill="white"/>
+      <path d="M0 0H21L29 8V38H0V0Z" fill="white"/>
+      <path d="M0 0V38H29V8H21V0H0ZM1 1H20V9H28V37H1V1Z" fill="#808080"/>
+      <path d="M21 0V8H29" fill="white"/>
+      <path d="M21 0L29 8" stroke="#808080" stroke-width="1"/>
+      <rect x="12" y="11" width="5" height="5" fill="#0000FF"/>
+      <rect x="12" y="19" width="5" height="12" fill="#0000FF"/>
+      <rect x="10" y="19" width="2" height="2" fill="#0000FF"/>
+      <rect x="9" y="31" width="11" height="2" fill="#0000FF"/>
+  </svg>
+  </td>
+    <td id="tableProps2" align="left" valign="middle" width="360"><h1 id="errortype"
+    style="COLOR: black; FONT: 13pt/15pt verdana"><span id="errorText">The page cannot be found</span></h1>
+    </td>
+  </tr>
+  <tr>
+    <td id="tablePropsWidth" width="400" colspan="2"><font
+    style="COLOR: black; FONT: 8pt/11pt verdana">The page you are looking for might have been
+    removed, had its name changed, or is temporarily unavailable.</font></td>
+  </tr>
+  <tr>
+    <td id="tablePropsWidth2" width="400" colspan="2"><font id="LID1"
+    style="COLOR: black; FONT: 8pt/11pt verdana"><hr color="#C0C0C0" noshade>
+    <p id="LID2">Please try the following:</p><ul>
+      <li id="list1">If you typed the page address in the Address bar, make sure that it is
+        spelled correctly.<br>
+      </li>
+      <li id="list2">Open the home page, and then look for links to the information
+        you want. </li>
+      <li id="list3">Click the ⬅️ <a href="javascript:history.back(1)">Back</a> button to try another link. </li>    
+      <li ID="list4">Click 🔍 <a href="https://www.bing.com/search?q=site%3Aest.im">Search</a> to look for information on the Internet. </li>
+</ul>
+    <p><br>
+    </p>
+    <h2 id="ietext" style="font:8pt/11pt verdana; color:black">HTTP 404 - File not found<br>
+    Internet Explorer <BR>
+    </h2>
+    </font></td>
+
+  </tr>
+</table>
 </body>
 </html>
