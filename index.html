@@ -73,14 +73,19 @@ body {
       uniform vec2 u_resolution;
       uniform float u_time;
 
-      // Vibrant, bright-only palette
-      vec3 palette(float t) {
-          vec3 a = vec3(0.6, 0.5, 0.8); 
-          vec3 b = vec3(0.4, 0.4, 0.4); 
-          vec3 c = vec3(1.0, 1.0, 1.0);
-          vec3 d = vec3(0.2, 0.4, 0.6); 
-          return a + b * cos(6.28318 * (c * t + d));
-      }
+    // Theme: Deep Forest & Clear Sky (Blue, Teal, Emerald, with tiny Gold highlights)
+    vec3 palette(float t) {
+        // a: The brightness baseline (Keep it high for vibrancy)
+        vec3 a = vec3(0.5, 0.5, 0.5); 
+        // b: The color "swing" 
+        vec3 b = vec3(0.5, 0.5, 0.5); 
+        // c: Speed of color cycling
+        vec3 c = vec3(1.0, 1.0, 1.0);
+        // d: Phase shift (This creates the Sky/Forest balance)
+        // 0.8 (Blue-heavy) | 0.5 (Green-heavy) | 0.2 (Tiny Red-Yellow peaks)
+        vec3 d = vec3(0.2, 0.5, 0.8); 
+        return a + b * cos(6.28318 * (c * t + d));
+    }
 
       vec2 rotate(vec2 uv, float angle) {
           return mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * uv;
@@ -91,7 +96,7 @@ body {
           uv = uv * 2.0 - 1.0;
           uv.x *= u_resolution.x / u_resolution.y;
 
-          float t = u_time * 0.35;
+          float t = u_time * 0.55;
 
           // LAYER 1: The "Wind" - creates the base warped field
           vec2 p = uv * 3.5;
