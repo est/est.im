@@ -1,34 +1,46 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+﻿<!DOCTYPE html>
+<html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Language" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>est.im</title>
 <link rel="shortcut icon" href="favicon.svg" />
-<style>
-<!--
-body { background-color:#000; font-family: Verdana, Geneva, Tahoma, sans-serif, 微软雅黑; color:#eee; }
-#content { width:75%; margin-top:10%; bottom:0; text-align:right }
-#content a, a:visited { color:#eee; text-decoration:none; }
-#content a:hover { color:#fff; }
-#content #title { font-size:5em;  }
-#content #desc { font-size:0.7em; }
-#content #list li {	list-style:none; display: inline; margin-left: 1%; }
-#content #footer { font-size:0.7em; }
--->
-</style>
-
 <link rel="prefetch" href="https://blog.est.im/">
 <link rel="prefetch" href="https://github.com/est/">
 <link rel="prerender" href="https://github.com/est/">
+<style>
+body {
+  background-color:#000; color:#eee;
+  font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  margin: 0; padding: 0; width: 100%; height: 100%;
+  overflow: hidden;
+}
+#glcanvas { 
+  position: absolute;  z-index: 1;
+  top: 0; left: 0; width: 100%; height: 100%;
+}
+.mask { 
+  position: absolute; z-index: 2;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: #000;color: #fff;
+  mix-blend-mode: multiply;
+}
+#content {width:75%; margin-top:10%; bottom:0; text-align:right ;}
+#content a, a:visited { color:#eee; text-decoration:none; }
+#content a:hover { color:#fff; }
+#content #title { font-size:8em;font-weight: 900; }
+#content #desc { font-size:1em; }
+#content #list li { font-size:1.2em; list-style:none; display: inline; margin-left: 1%; }
+#content #footer { font-size:1em; }
+</style>
+
 </head>
 
 <body>
-
-<div id="content">
-  <div id="title">Est.im</div>
+<canvas id="glcanvas"></canvas>
+<div class="mask"><div id="content">
+  <div id="title">est.im</div>
   <div id="desc"><a href="https://en.wikipedia.org/wiki/extrospection">Extrospect</a>, 
   <a href="https://de.wikipedia.org/wiki/sein">Sein</a> &amp; 
   <a href="https://en.wikipedia.org/wiki/tao">Tao</a></div>
@@ -40,12 +52,122 @@ body { background-color:#000; font-family: Verdana, Geneva, Tahoma, sans-serif, 
       <li><a rel="prefetch" href="https://steamcommunity.com/id/electronixtar/">Steam</a></li>
   </ul>
   <div id="footer">&copy; 2005-<span id="thisYear">2026</span> est.im</div>
-</div>
+</div></div>
 <script type="text/javascript">
   if(location.protocol==="http:"){
       location.replace(location.href.replace(/^http:/, "https:"));
   }
   thisYear.innerText = (new Date()).getFullYear();
+
+  const gl = glcanvas.getContext('webgl') || glcanvas.getContext('experimental-webgl');
+
+  const vsSource = `
+      attribute vec4 aVertexPosition;
+      void main() {
+          gl_Position = aVertexPosition;
+      }
+  `;
+
+  const fsSource = `
+      precision highp float;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      // Vibrant, bright-only palette
+      vec3 palette(float t) {
+          vec3 a = vec3(0.6, 0.5, 0.8); 
+          vec3 b = vec3(0.4, 0.4, 0.4); 
+          vec3 c = vec3(1.0, 1.0, 1.0);
+          vec3 d = vec3(0.2, 0.4, 0.6); 
+          return a + b * cos(6.28318 * (c * t + d));
+      }
+
+      vec2 rotate(vec2 uv, float angle) {
+          return mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * uv;
+      }
+
+      void main() {
+          vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+          uv = uv * 2.0 - 1.0;
+          uv.x *= u_resolution.x / u_resolution.y;
+
+          float t = u_time * 0.35;
+
+          // LAYER 1: The "Wind" - creates the base warped field
+          vec2 p = uv * 3.5;
+          for(float i = 1.0; i < 5.0; i++) {
+              p = rotate(p, 0.4);
+              p.x += 0.4 / i * sin(i * 1.0 * p.y + t);
+              p.y += 0.3 / i * cos(i * 1.0 * p.x - t);
+          }
+
+          // LAYER 2: Breaking the bars into "shapes"
+          // Using sin of both p.x and p.y creates a grid of blobs rather than lines
+          float blobMap = sin(p.x * 1.5) * cos(p.y * 1.5);
+          
+          // Secondary warp to make the blobs move like a breeze
+          blobMap += 0.5 * sin(length(p) - t * 1.2);
+
+          // Sample palette based on the blob map
+          // Adding 'length(uv) * 0.2' keeps a bit of spatial variance 
+          // so the whole screen doesn't turn one color.
+          vec3 color = palette(blobMap * 0.5 + length(uv) * 0.3 + t * 0.1);
+
+          // Brightness boost for punchy visuals against black
+          color *= 1.4;
+
+          gl_FragColor = vec4(color, 1.0);
+      }
+  `;
+
+  function compileShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(shader));
+          return null;
+      }
+      return shader;
+  }
+
+  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vsSource);
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  const shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  const positions = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  const positionLocation = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
+  const timeLocation = gl.getUniformLocation(shaderProgram, 'u_time');
+  const resolutionLocation = gl.getUniformLocation(shaderProgram, 'u_resolution');
+
+  function resize() {
+      glcanvas.width = window.innerWidth * window.devicePixelRatio;
+      glcanvas.height = window.innerHeight * window.devicePixelRatio;
+      gl.viewport(0, 0, glcanvas.width, glcanvas.height);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function render(time) {
+      time *= 0.001;
+      gl.useProgram(shaderProgram);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(positionLocation);
+      gl.uniform1f(timeLocation, time);
+      gl.uniform2f(resolutionLocation, glcanvas.width, glcanvas.height);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
 </script>
 </body>
 
