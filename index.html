@@ -68,62 +68,59 @@ body {
       }
   `;
 
-  const fsSource = `
-      precision highp float;
-      uniform vec2 u_resolution;
-      uniform float u_time;
+        const fsSource = `
+            precision highp float;
+            uniform vec2 u_resolution;
+            uniform float u_time;
 
-    // Theme: Deep Forest & Clear Sky (Blue, Teal, Emerald, with tiny Gold highlights)
-    vec3 palette(float t) {
-        // a: The brightness baseline (Keep it high for vibrancy)
-        vec3 a = vec3(0.5, 0.5, 0.5); 
-        // b: The color "swing" 
-        vec3 b = vec3(0.5, 0.5, 0.5); 
-        // c: Speed of color cycling
-        vec3 c = vec3(1.0, 1.0, 1.0);
-        // d: Phase shift (This creates the Sky/Forest balance)
-        // 0.8 (Blue-heavy) | 0.5 (Green-heavy) | 0.2 (Tiny Red-Yellow peaks)
-        vec3 d = vec3(0.2, 0.5, 0.8); 
-        return a + b * cos(6.28318 * (c * t + d));
-    }
+            // Updated Palette: Pure White, Sky Blue, and Organic Lime/Green
+            // The d-vector [0.3, 0.5, 0.6] ensures the Red peak (0.3) is minimized 
+            // and transitions mostly through Blue/Green zones.
+            vec3 palette(float t) {
+                vec3 a = vec3(0.5, 0.8, 0.8); // High Green/Blue baseline for 'Sky' feel
+                vec3 b = vec3(0.5, 0.4, 0.2); // Swing intensity
+                vec3 c = vec3(1.0, 1.0, 1.0); // Frequency
+                vec3 d = vec3(0.3, 0.5, 0.6); // Phase shift favoring Blue -> Green -> Yellow
+                return a + b * cos(6.28318 * (c * t + d));
+            }
 
-      vec2 rotate(vec2 uv, float angle) {
-          return mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * uv;
-      }
+            vec2 rotate(vec2 uv, float angle) {
+                return mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * uv;
+            }
 
-      void main() {
-          vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-          uv = uv * 2.0 - 1.0;
-          uv.x *= u_resolution.x / u_resolution.y;
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                uv = uv * 2.0 - 1.0;
+                uv.x *= u_resolution.x / u_resolution.y;
 
-          float t = u_time * 0.55;
+                float t = u_time * 0.75;
 
-          // LAYER 1: The "Wind" - creates the base warped field
-          vec2 p = uv * 3.5;
-          for(float i = 1.0; i < 5.0; i++) {
-              p = rotate(p, 0.4);
-              p.x += 0.4 / i * sin(i * 1.0 * p.y + t);
-              p.y += 0.3 / i * cos(i * 1.0 * p.x - t);
-          }
+                // Zoom factor for intricate detail
+                vec2 p = uv * 3.8;
+                
+                // Domain Warping for organic, breezy movement
+                for(float i = 1.0; i < 6.0; i++) {
+                    p = rotate(p, 0.3 + (t * 0.03));
+                    p.x += 0.4 / i * sin(i * 3.0 * p.y + t);
+                    p.y += 0.3 / i * cos(i * 2.5 * p.x - t);
+                }
 
-          // LAYER 2: Breaking the bars into "shapes"
-          // Using sin of both p.x and p.y creates a grid of blobs rather than lines
-          float blobMap = sin(p.x * 1.5) * cos(p.y * 1.5);
-          
-          // Secondary warp to make the blobs move like a breeze
-          blobMap += 0.5 * sin(length(p) - t * 1.2);
+                // Create cellular patterns
+                float flow = sin(p.x * 1.5) * cos(p.y * 1.5);
+                
+                // Secondary shimmer for a 'living' bioluminescent effect
+                flow += 0.25 * sin(length(p) * 1.5 - t * 2.2);
 
-          // Sample palette based on the blob map
-          // Adding 'length(uv) * 0.2' keeps a bit of spatial variance 
-          // so the whole screen doesn't turn one color.
-          vec3 color = palette(blobMap * 0.5 + length(uv) * 0.3 + t * 0.1);
+                // Sample the adjusted palette
+                vec3 color = palette(flow * 0.4 + t * 0.1);
 
-          // Brightness boost for punchy visuals against black
-          color *= 1.4;
+                // Contrast adjustment: Boosts the Cyan/Lime highlights
+                color = smoothstep(0.1, 0.9, color);
+                color *= 1.6;
 
-          gl_FragColor = vec4(color, 1.0);
-      }
-  `;
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
 
   function compileShader(gl, type, source) {
       const shader = gl.createShader(type);
